@@ -11,6 +11,10 @@ app = Flask(__name__)
 def home():
    return render_template('calculator.html')
 
+@app.route("/whiteboard", methods=['GET', 'POST'] ) 
+def whiteboard():
+   return render_template('whiteboard.html')
+
 @app.route("/solveSingleVar",methods=['GET', 'POST'])
 def solveSingleVar():
     tex_equation = request.json['equation']
