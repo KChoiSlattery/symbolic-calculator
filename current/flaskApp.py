@@ -24,7 +24,7 @@ def solveSingleVar():
         sympy_equation = sp.Eq(inlhs,inrhs)
         free_symbols = sympy_equation.free_symbols
         sympy_solved_rhs = sp.solve(sympy_equation,sympy_solve_var)
-        tex_solved_rhs = sp.latex(sympy_solved_rhs).replace(r"d_{actuallyD}","d")
+        tex_solved_rhs = sp.latex(sympy_solved_rhs, inv_trig_style="power").replace(r"d_{actuallyD}","d")
         if len(sympy_solved_rhs) == 1:
             octave_code = sp.printing.octave_code(sympy_solved_rhs[0],assign_to=sympy_solve_var).replace(r"d_{actuallyD}","d")
             python_code = sp.printing.pycode(sympy_solved_rhs[0]).replace(r"d_actuallyD","d")
@@ -58,10 +58,6 @@ def solveSingleVar():
             "python_code": "",
             "c_code": ""
         })
-    equation = request.form.get('equation')
-    solveVar = request.form.get('solveVar')
-    out = kcl.solve_for_var(equation, solveVar)
-    return sp.latex(out).replace(r"d_{actuallyD}","d")
 
 @app.route("/getFreeSymbols",methods=['GET','POST'])
 def getFreeSymbols():

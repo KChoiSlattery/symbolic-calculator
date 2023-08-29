@@ -5,7 +5,7 @@
 <head>
     <link rel="stylesheet" href="{{url_for('static', filename='css/styles.css')}}" type="text/css">
 
-    <!-- MathQuill-->
+    <!-- MathQuill, used for entering math equations-->
     <link rel="stylesheet" href="{{url_for('static', filename='mathquill-0.10.1/mathquill.css')}}"/>
     <script src="{{url_for('static', filename='jquery/jquery-3.7.0.js')}}"></script>
     <script src="{{url_for('static', filename='mathquill-0.10.1/mathquill.js')}}"></script>
@@ -13,13 +13,12 @@
     var MQ = MathQuill.getInterface(2);
     </script>
 
-    <!-- KaTeX -->
+    <!-- KaTeX, used for rendering math equations -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous">
-    <!-- The loading of KaTeX is deferred to speed up page rendering -->
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" integrity="sha384-cpW21h6RZv/phavutF+AuVYrr+dA8xD9zs6FwLpaCct6O9ctzYFfFr4dgmgccOTx" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
 
-    <!-- Highlight.js -->
+    <!-- Highlight.js, used for syntax-highlighting the generated code -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/c.min.js"></script>
@@ -29,15 +28,31 @@
 
 <body>
     <h1>Kieran's Symbolic Calculator</h1>
+    <p style="text-align:center">Edit the equation in the first text box below and enter the variable you'd like to solve for in the small text box below that one. Make sure you only have one symbol in the second text box, but it can be a symbol with a subscript or a greek letter. Press "\" followed by some TeX command to enter greek letters or unlock hidden functionality (Integrals?) This is still very much a development build, please let me know if you have any suggestions</p>
     <h2>Algebraic Solver</h2>
     <p style="text-align: center; font-size:30"><span id="equation">ax^2+bx+c=0</span></p>
     <p style="text-align: center; font-size:30"><span id="solveVar">x</span><span id="outputMath" style="text-align: center; font-size:30"></span><span id=solveVarLatex></span></p>
     <h3>Octave/MATLAB Code of Output</h3>
-    <pre><code id="octaveCode"></code></pre>
+    <pre><code class="language-matlab" id="octaveCode"></code></pre>
     <h3>Python Code of Output</h3>
-    <pre><code id="pythonCode"></code></pre>
+    <pre><code class="language-python" id="pythonCode"></code></pre>
     <h3>C/C++ Code of Output</h3>
-    <pre><code type="codeBlock" id="ccode"></code></pre>
+    <pre><code class="language-cpp" id="ccode"></code></pre>
+
+    <p style="text-align:center">Todo:
+        <ul>
+            <li>Make the inputting of the "variable to solve for" more intuitive by making it some sort of selection menu like a drop-down.</li>
+            <li>Turn "Algebraic Solver" into a dropdown menu to add things like an integral calculator(which would implicitly do laplace & fourier transforms) or derivative calculator</li>
+            <li>Make options that come up when you type something that might be ambiguous, such as when you enter "e" you can select whether "e" is a variable or Euler's constant.</li>
+            <li>Make the reporting of errors something other than spitting the error into the output text box and letting KaTeX (the TeX rendering engine) try to parse it</li>
+        </ul>
+        If I ever get around to these:
+        <ul>
+            <li>Have an equation bank that I can select equations from and save equations to, and allow saving and importing of equation banks</li>
+            <li>Have a way to substitute expressions in for variables, to let users chain their equations together</li>
+            <li>Linear Algebra???? Graphing???? Node-based scientific and mathematical derivations??</li>
+        </ul> 
+    </p>
 
     <script>
         //Solve Symbolic Equation for 1 Variable
@@ -46,7 +61,7 @@
 
         var equationMathField = MQ.MathField(equationSpan, {
             spaceBehavesLikeTab: true,
-            autoCommands: 'pi theta sqrt sum alpha int rho',
+            autoCommands: 'pi sqrt sum alpha int',
             handlers: {
                 edit: function() {
                     updateAnswer()
@@ -56,7 +71,7 @@
             });
         var solveVarMathField = MQ.MathField(solveVarSpan, {
             spaceBehavesLikeTab: true,
-            autoCommands: 'pi theta sqrt sum alpha int rho',
+            autoCommands: 'pi sqrt sum alpha int',
             handlers: {
                 edit: function() {
                     updateAnswer()
