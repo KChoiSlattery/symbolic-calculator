@@ -32,9 +32,40 @@
 
 <body>
     <h1>Whiteboard</h1>
-    <canvas id='canvas' width='1024' height='720' style='border: 1px solid; margin-left: auto; margin-right: auto;'></canvas>
+    <p><span id="staticMath">\\(3x+2\\)</span></p>
+    <canvas id='canvas' width='1024' height='720' style='border: 1px solid; margin-left: auto; margin-right: auto; display: block;'></canvas>
     <script>
+        //node constructor class
+        function equationNode()
+        {
+            this.addInput("A","string");
+            this.addInput("B","string");
+            this.addOutput("\\(A=B\\)","string");
+            this.properties = { precision: 1 };
+        }
+
         
+        //name to show
+        equationNode.title = "Equation";
+
+        
+        //function to call when the node is executed
+        equationNode.prototype.onExecute = function()
+        {
+            var A = this.getInputData(0);
+            if( A === undefined )
+            A = 0;
+            var B = this.getInputData(1);
+            if( B === undefined )
+            B = 0;
+            katex.render("ax+b",document.getElementById("staticMath"));
+            this.setOutputData( 0, A + B );
+        }
+
+        
+        //register in the system
+        LiteGraph.registerNodeType("custom/equationNode", equationNode);
+
         var graph = new LGraph();
         
         var canvas = new LGraphCanvas("#canvas", graph);
@@ -53,3 +84,4 @@
         graph.start()
     </script>
 </body>
+</html>
