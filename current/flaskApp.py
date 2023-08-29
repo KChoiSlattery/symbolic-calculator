@@ -41,7 +41,7 @@ def solveSingleVar():
                     endingNewline = ""
                 numSolutionsInputted = numSolutionsInputted + 1
                 octave_code = octave_code + r"%Solution " + str(numSolutionsInputted) + ":\n" + sp.printing.octave_code(i,assign_to=sympy_solve_var).replace(r"d_{actuallyD}","d")+endingNewline
-                python_code = python_code + r"#Solution " + str(numSolutionsInputted) + ":\n" + sp.printing.pycode(i).replace(r"d_actuallyD","d")+endingNewline
+                python_code = python_code + r"#Solution " + str(numSolutionsInputted) + ":\n" + sp.printing.pycode(sympy_solve_var) + " = " + sp.printing.pycode(i).replace(r"d_actuallyD","d")+endingNewline
                 c_code = c_code + r"//Solution " + str(numSolutionsInputted) + ":\n" + sp.printing.ccode(i,assign_to=sympy_solve_var).replace(r"d_{actuallyD}","d")+endingNewline
         return json.dumps({
             "free_symbols": str(free_symbols),
