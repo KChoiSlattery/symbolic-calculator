@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+
+<head>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/styles.css')}}" type="text/css">
+
+    <!-- MathQuill-->
+    <link rel="stylesheet" href="{{url_for('static', filename='mathquill-0.10.1/mathquill.css')}}"/>
+    <script src="{{url_for('static', filename='jquery/jquery-3.7.0.js')}}"></script>
+    <script src="{{url_for('static', filename='mathquill-0.10.1/mathquill.js')}}"></script>
+    <script>
+    var MQ = MathQuill.getInterface(2);
+    </script>
+
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous">
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" integrity="sha384-cpW21h6RZv/phavutF+AuVYrr+dA8xD9zs6FwLpaCct6O9ctzYFfFr4dgmgccOTx" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+
+    <!-- Highlight.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/matlab.min.js"></script>
+</head>
+
+<body>
+    <h1>Kieran's Symbolic Calculator</h1>
+    <h2>Algebraic Solver</h2>
+    <p style="text-align: center; font-size:30"><span id="equation">ax^2+bx+c=0</span></p>
+    <p style="text-align: center; font-size:30"><span id="solveVar">x</span><span id="outputMath" style="text-align: center; font-size:30"></span><span id=solveVarLatex></span></p>
+    <h3>Octave/MATLAB Code of Output</h3>
+    <pre><code id="octaveCode"></code></pre>
+    <h3>Python Code of Output</h3>
+    <pre><code id="pythonCode"></code></pre>
+    <h3>C/C++ Code of Output</h3>
+    <pre><code type="codeBlock" id="ccode"></code></pre>
+
+    <script>
+        //Solve Symbolic Equation for 1 Variable
+        var equationSpan = document.getElementById('equation');
+        var solveVarSpan = document.getElementById('solveVar');
+
+        var equationMathField = MQ.MathField(equationSpan, {
+            spaceBehavesLikeTab: true,
+            autoCommands: 'pi theta sqrt sum alpha int rho',
+            handlers: {
+                edit: function() {
+                    updateAnswer()
+                    //document.getElementById('eqLatex').innerHTML = equationMathField.latex()
+                    }
+                }
+            });
+        var solveVarMathField = MQ.MathField(solveVarSpan, {
+            spaceBehavesLikeTab: true,
+            autoCommands: 'pi theta sqrt sum alpha int rho',
+            handlers: {
+                edit: function() {
+                    updateAnswer()
+                    //document.getElementById('solveVarLatex').innerHTML = solveVarMathField.latex()
+                    }
+                }
+            });
+
+        function updateAnswer() {
+            var output = "out"
+            document.getElementById("outputMath").innerHTML = "=Loading..."
+            $.ajax({
+                type : "POST",
+                url : '/solveSingleVar',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    equation : equationMathField.latex(),
+                    solve_var : solveVarMathField.latex()
+                }),
+                traditional: true,
+                success: function(data) {
+                    console.log(data)
+                    var returned = JSON.parse(data)
+                    console.log(returned["free_symbols"])
+                    document.getElementById("outputMath").innerHTML = " \\(="+returned["solved_rhs"]+"\\)"
+                    renderMathInElement(document.getElementById("outputMath"));
+                    document.getElementById("octaveCode").innerHTML = returned["octave_code"];
+                    document.getElementById("pythonCode").innerHTML = returned["python_code"];
+                    document.getElementById("ccode").innerHTML = returned["c_code"];
+                    hljs.highlightAll();
+                    return 'AAAA'
+                    }
+                });
+        }
+        updateAnswer()
+    </script>
+</body>
