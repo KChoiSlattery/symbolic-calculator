@@ -1,0 +1,22 @@
+{
+  "name": "whiteboard",
+  "version": "1.0.0",
+  "description": "",
+  "main": "flaskApp.py",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KChoiSlattery/symbolic-calculator.git"
+  },
+  "author": "Kieran Choi-Slattery",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KChoiSlattery/symbolic-calculator/issues"
+  },
+  "homepage": "https://github.com/KChoiSlattery/symbolic-calculator#readme",
+  "dependencies": {
+    "litegraph.js": "^0.7.14"
+  }
+}
