@@ -1,8 +1,7 @@
 from flask import Flask, request, render_template
-#from Symbolic_Calculator_Website import kieranCalculatorLib as kcl
 import sympy as sp
 import numpy as np
-import json
+import simplejson as json
 import latex2sympy2
 import requests
 
