@@ -11,9 +11,6 @@ app = Flask(__name__)
 def home():
    return render_template('calculator.html')
 
-if __name__ == "__main__":
-    app.run()
-
 @app.route("/solveSingleVar",methods=['GET', 'POST'])
 def solveSingleVar():
     tex_equation = request.json['equation']
