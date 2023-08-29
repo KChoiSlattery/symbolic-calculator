@@ -44,6 +44,8 @@
             <li>Make the inputting of the "variable to solve for" more intuitive by making it some sort of selection menu like a drop-down.</li>
             <li>Turn "Algebraic Solver" into a dropdown menu to add things like an integral calculator(which would implicitly do laplace & fourier transforms) or derivative calculator</li>
             <li>Make options that come up when you type something that might be ambiguous, such as when you enter "e" you can select whether "e" is a variable or Euler's constant.</li>
+            <li>Allow you to specify some assumptions such as "positive" or "real" on your variables to reduce the reporting of spurious solutions</li>
+            <li>In the same vein, make use of SymPy's "solveset" function instead of their "solve" function, for reasons described <a href="https://docs.sympy.org/latest/modules/solvers/solveset.html">here</a> This will also allow the solving of inequalities.</li> 
             <li>Make the reporting of errors something other than spitting the error into the output text box and letting KaTeX (the TeX rendering engine) try to parse it</li>
         </ul>
         If I ever get around to these:
