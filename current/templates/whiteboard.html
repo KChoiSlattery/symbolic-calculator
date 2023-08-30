@@ -9,79 +9,30 @@
     <link rel="stylesheet" href="{{url_for('static', filename='mathquill-0.10.1/mathquill.css')}}"/>
     <script src="{{url_for('static', filename='jquery/jquery-3.7.0.js')}}"></script>
     <script src="{{url_for('static', filename='mathquill-0.10.1/mathquill.js')}}"></script>
-    <script>
-    var MQ = MathQuill.getInterface(2);
-    </script>
 
+
+    <script>
+        var MQ = MathQuill.getInterface(2);
+    </script>
+    
     <!-- KaTeX, used for rendering math equations -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" integrity="sha384-cpW21h6RZv/phavutF+AuVYrr+dA8xD9zs6FwLpaCct6O9ctzYFfFr4dgmgccOTx" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
-
+    
     <!-- Highlight.js, used for syntax-highlighting the generated code -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/c.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/matlab.min.js"></script>
-
-    <!-- litegraph.js, used to make the nodes-->
-	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='litegraph.js/css/litegraph.css')}}">
-	<script type="text/javascript" src="{{url_for('static', filename='litegraph.js/build/litegraph.js')}}"></script>
+    
+    <!-- jsplumb community edition, used to make the nodes-->
+    <script src="{{url_for('static', filename='node_modules/@jsplumb/browser-ui/js/jsplumb-browser-ui.umd.js')}}"></script>
 </head>
 
 <body>
     <h1>Whiteboard</h1>
     <p><span id="staticMath">\\(3x+2\\)</span></p>
-    <canvas id='canvas' width='1024' height='720' style='border: 1px solid; margin-left: auto; margin-right: auto; display: block;'></canvas>
-    <script>
-        //node constructor class
-        function equationNode()
-        {
-            this.addInput("A","string");
-            this.addInput("B","string");
-            this.addOutput("\\(A=B\\)","string");
-            this.properties = { precision: 1 };
-        }
-
-        
-        //name to show
-        equationNode.title = "Equation";
-
-        
-        //function to call when the node is executed
-        equationNode.prototype.onExecute = function()
-        {
-            var A = this.getInputData(0);
-            if( A === undefined )
-            A = 0;
-            var B = this.getInputData(1);
-            if( B === undefined )
-            B = 0;
-            katex.render("ax+b",document.getElementById("staticMath"));
-            this.setOutputData( 0, A + B );
-        }
-
-        
-        //register in the system
-        LiteGraph.registerNodeType("custom/equationNode", equationNode);
-
-        var graph = new LGraph();
-        
-        var canvas = new LGraphCanvas("#canvas", graph);
-        
-        var node_const = LiteGraph.createNode("basic/const");
-        node_const.pos = [200,200];
-        graph.add(node_const);
-        node_const.setValue(4.5);
-        
-        var node_watch = LiteGraph.createNode("basic/watch");
-        node_watch.pos = [700,200];
-        graph.add(node_watch);
-        
-        node_const.connect(0, node_watch, 0 );
-        
-        graph.start()
-    </script>
 </body>
 </html>
