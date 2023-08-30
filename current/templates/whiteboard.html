@@ -4,11 +4,16 @@
 
 <head>
     <link rel="stylesheet" href="{{url_for('static', filename='css/styles.css')}}" type="text/css">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/whiteboard-style.css')}}" type="text/css">
 
     <!-- MathQuill, used for entering math equations-->
     <link rel="stylesheet" href="{{url_for('static', filename='mathquill-0.10.1/mathquill.css')}}"/>
     <script src="{{url_for('static', filename='jquery/jquery-3.7.0.js')}}"></script>
     <script src="{{url_for('static', filename='mathquill-0.10.1/mathquill.js')}}"></script>
+    
+    <!-- jsplumb community edition, used to make the nodes-->
+    <link rel="stylesheet" href="{{url_for('static', filename='node_modules/@jsplumb/browser-ui/css/jsplumbtoolkit-demo.css')}}" type="text/css">
+    <script src="{{url_for('static', filename='node_modules/@jsplumb/browser-ui/js/jsplumb.browser-ui.umd.js')}}"></script>
 
 
     <script>
@@ -26,13 +31,37 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/c.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/matlab.min.js"></script>
-    
-    <!-- jsplumb community edition, used to make the nodes-->
-    <script src="{{url_for('static', filename='node_modules/@jsplumb/browser-ui/js/jsplumb-browser-ui.umd.js')}}"></script>
 </head>
 
 <body>
-    <h1>Whiteboard</h1>
-    <p><span id="staticMath">\\(3x+2\\)</span></p>
+    <h1>Kieran's Whiteboard</h1>
+</img>
+    <div id="whiteboard" class="whiteboard">
+        <span id="element1" class="draggableNode">
+            hasfshsgafg
+        </span>
+        <span id="element2" class="draggableNode">
+            aaaaaaaa
+        </span>
+    </div>
+    <script>
+        element1 = document.getElementById("element1");
+        element2 = document.getElementById("element2");
+
+        jsPlumb.ready(() => {
+            const instance = jsPlumb.newInstance({
+                container:document.getElementById("whiteboard"),
+            });
+
+            instance.addEndpoint(
+                element1, 
+                { endpoint:'Dot' 
+            });
+            instance.addEndpoint(
+                element2, 
+                { endpoint:'Dot' 
+            });
+        });
+    </script>
 </body>
 </html>

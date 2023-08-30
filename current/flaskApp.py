@@ -3,7 +3,6 @@ import sympy as sp
 import numpy as np
 import simplejson as json
 import latex2sympy2
-import requests
 
 app = Flask(__name__)
 
