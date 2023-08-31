@@ -37,12 +37,10 @@
     <h1>Kieran's Whiteboard</h1>
 </img>
     <div id="whiteboard" class="whiteboard">
-        <span id="element1" class="draggableNode">
-            hasfshsgafg
+        <span id="element1" class="draggableNode inputMathNode">
+            <span id="element3" class="inputMathSpan"></span>
         </span>
-        <span id="element2" class="draggableNode">
-            aaaaaaaa
-        </span>
+        <span id="element2" class="draggableNode staticMathNode"></span>
     </div>
     <script>
         element1 = document.getElementById("element1");
@@ -60,6 +58,17 @@
             instance.addEndpoint(
                 element2, 
                 { endpoint:'Dot' 
+            });
+            katex.render("c = \\pm\\sqrt{a^2 + b^2}", element2, {
+                throwOnError: false
+            });
+            var MQ = MathQuill.getInterface(2); // for backcompat
+            var mathField = MQ.MathField(element3, {
+                spaceBehavesLikeTab: true, // configurable
+                handlers: {
+                    edit: function() { // useful event handlers
+                    }
+                }
             });
         });
     </script>
