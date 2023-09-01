@@ -14,6 +14,10 @@ def home():
 def whiteboard():
    return render_template('whiteboard.html')
 
+#######################
+#old site functions:#
+#######################
+
 @app.route("/solveSingleVar",methods=['GET', 'POST'])
 def solveSingleVar():
     tex_equation = request.json['equation']
@@ -47,7 +51,7 @@ def solveSingleVar():
                 python_code = python_code + r"#Solution " + str(numSolutionsInputted) + ":\n" + sp.printing.pycode(sympy_solve_var) + " = " + sp.printing.pycode(i).replace(r"d_actuallyD","d")+endingNewline
                 c_code = c_code + r"//Solution " + str(numSolutionsInputted) + ":\n" + sp.printing.ccode(i,assign_to=sympy_solve_var).replace(r"d_{actuallyD}","d")+endingNewline
         return json.dumps({
-            "free_symbols": str(free_symbols),
+            "free_symbols": [str(element) for element in free_symbols],
             "solved_rhs": tex_solved_rhs,
             "octave_code": octave_code,
             "python_code": python_code,
@@ -62,34 +66,47 @@ def solveSingleVar():
             "c_code": ""
         })
 
-@app.route("/getFreeSymbols",methods=['GET','POST'])
-def getFreeSymbols():
-    equation = request.form.get('equation')
-    outText = "<select>"
-    
-    return 
 
-@app.route("/evalPts",methods=['GET', 'POST'])
-def evalPts():
-    latex2sympy2.set_real(False)
-    pts = np.array(request.json['ptsToEval'])
+#######################
+#whiteboard functions:#
+#######################
+
+@app.route("/parse_input_eq",methods=['GET','POST'])
+def parseLatex():
+    input_eq = request.json['input_eq']
     try:
-        expression = request.json['expression']
-    
-        symExpr = latex2sympy2.latex2sympy(expression)
-        print(symExpr)
-        x = sp.symbols("x")
-        f = sp.lambdify(x, symExpr, "numpy")
-        #for sym in symExpr.free_symbols:
-        #    print(sym)
-        #    f = sp.lambdify(sym, symExpr, "numpy")
-        evaldPts = f(pts)
-        out = json.dumps(evaldPts.tolist())
-        return out
-    except Exception as e: 
-        out = json.dumps(np.zeros(np.shape(pts)).tolist())
-        print(e)
-        return out
+        input_eq = sanitize_tex(input_eq)
+        inlhs = latex2sympy2.latex2sympy(input_eq [:input_eq .index("=")])
+        inrhs = latex2sympy2.latex2sympy(input_eq [input_eq .index("=")+1:])
+        free_symbols = inlhs.free_symbols.union(inrhs.free_symbols)
+        sympy_full_equation = sp.Eq(inlhs,inrhs)
+        return json.dumps({
+            "errored": False,
+            "free_symbols_tex": [desanitize_tex(sp.latex(element)) for element in free_symbols],
+            "free_symbols_srepr": [sp.srepr(element) for element in free_symbols],
+            "srepr": sp.srepr(sympy_full_equation)
+        })
+    except Exception as error:
+        return json.dumps({
+            "errored": True,
+            "error_code": repr(error),
+        })
+
+def sanitize_tex(latex):
+    latex = latex.replace(r"\delta","δ")
+    latex = latex.replace(r"\Delta","Δ")
+    latex = latex.replace(r"\lambda","λ")
+    latex = latex.replace(r"\Lambda","Λ")
+    latex = latex.replace("d",r"\spadesuit")
+    latex = latex.replace("δ",r"\delta")
+    latex = latex.replace("Δ",r"\Delta")
+    latex = latex.replace("λ",r"\lambda")
+    latex = latex.replace("Λ",r"\Lambda")
+    return latex
+
+def desanitize_tex(latex):
+    latex = latex.replace(r"\spadesuit","d")
+    return latex
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', threaded=True, port="5500")

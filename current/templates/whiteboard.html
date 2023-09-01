@@ -38,38 +38,196 @@
 </img>
     <div id="whiteboard" class="whiteboard">
         <span id="element1" class="draggableNode inputMathNode">
-            <span id="element3" class="inputMathSpan"></span>
+            <span id="element3" class="mathField"></span>
+            <table id="table" class="symbolAnchorContainerTable">
+                <tr id="row">
+                    <th id = "x" class="symbolLabel">
+                        x
+                    </th>
+                    <th id = "a" class="symbolLabel">
+                        a
+                    </th>
+                    <th id = "b_first" class="symbolLabel">
+                        b_first
+                    </th>
+                    <th id = "zeta" class="symbolLabel">
+                        \zeta
+                    </th>
+                </tr>
+            </table>
         </span>
         <span id="element2" class="draggableNode staticMathNode"></span>
     </div>
     <script>
+
+        
+
+        
+        
+        class std_eq_node{
+            constructor(srepr, tex, parent) {
+                this.srepr=srepr;
+                this.tex=tex;
+                this.parent = parent
+                this.symbols = [];
+                this.endpoints = [];
+                this.children = []; 
+                this.update();
+            }
+            update() {
+                
+    
+                //code that goes in all nodes to allow recursive updating of everything downstream
+                for (let i = 0; i < this.children.length; i++) {
+                    this.children[i].update();
+                    } 
+            }
+        }
+
         element1 = document.getElementById("element1");
         element2 = document.getElementById("element2");
 
         jsPlumb.ready(() => {
+            var MQ = MathQuill.getInterface(2);
+
             const instance = jsPlumb.newInstance({
                 container:document.getElementById("whiteboard"),
+                connector:{
+                    type:jsPlumb.BezierConnector.type,
+                    options:{
+                        curviness: 25
+                    }
+                }
             });
 
-            instance.addEndpoint(
-                element1, 
-                { endpoint:'Dot' 
-            });
-            instance.addEndpoint(
-                element2, 
-                { endpoint:'Dot' 
+            whiteboard = document.getElementById("whiteboard");
+
+            class input_eq_node{
+                update() {
+                    let x = this
+                    this.tex = this.mathField.latex();
+                    $.ajax({
+                        type : "POST",
+                        url : '/parse_input_eq',
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            input_eq : this.tex,
+                        }),
+                        traditional: true,
+                        success: function(data) {
+                            let obj = JSON.parse(data)
+                            if (obj.errored == true) {
+                                console.log("Failed to parse, error code: \n" + obj["error_code"])
+                            }
+                            else {
+                                instance.setSuspendDrawing(true);
+                                console.log(obj);
+                                console.log(x);
+                                x.srepr = obj.srepr;
+                                //loop through all the symbols in the current equation and see if they're still there, remove them otherwise
+                                for (let i = 0; i < x.symbols_srepr.length; i++) {
+                                    if (!obj.free_symbols_srepr.includes(x.symbols_srepr[i])) {
+                                        console.log("Attempting to remove...")
+                                        x.symbols_srepr.splice(i, 1);
+                                        x.symbols_tex.splice(i, 1);
+                                        console.log(x.symbols_tex)
+                                        x.symbol_cells[i].remove();
+                                        x.symbol_cells.splice(i,1);
+                                        instance.deleteEndpoint(x.endpoints[i]);
+                                        x.endpoints.splice(i,1)
+                                        i--;
+                                    }
+                                }
+
+                                //loop through all the symbols returned from the parser and see if they're already here, add them otherwise
+                                for (let i = 0; i < obj.free_symbols_srepr.length; i++) {
+                                    if (!x.symbols_srepr.includes(obj.free_symbols_srepr[i])) {
+                                        x.symbols_srepr.push(obj.free_symbols_srepr[i])
+                                        x.symbols_tex.push(obj.free_symbols_tex[i])
+                                        x.symbol_cells.push(document.createElement("th"))
+                                        x.symbol_cells[x.symbol_cells.length-1].classList.add("symbolLabel")
+                                        katex.render(obj.free_symbols_tex[i], x.symbol_cells[x.symbol_cells.length-1], {
+                                            throwOnError: false
+                                        });
+                                        x.symbolAnchorContainer.appendChild(x.symbol_cells[x.symbol_cells.length-1]);
+                                        x.endpoints.push(instance.addEndpoint(x.container, {
+                                            source:true,
+                                            endpoint:"Rectangle",
+                                            anchor:"Bottom",
+                                        }));
+                                    }
+                                } 
+                                }
+
+                                //move all anchors to where their respective symbols are to account for added or removed symbols
+                                for (let i = 0; i < x.symbols_srepr.length; i++) {
+                                    x.endpoints[i].setAnchor([ 0, 1, 0, 1,  x.symbol_cells[i].getBoundingClientRect().width/2+x.symbol_cells[i].offsetLeft+x.symbolAnchorContainerTable.offsetLeft+x.symbolAnchorContainer.offsetLeft, 0]);
+                                }
+                                instance.revalidate(x.container);
+                                instance.setSuspendDrawing(false, true);
+                            }
+                        });
+    
+                    //code that goes in all nodes to allow recursive updating of everything downstream
+                    for (let i = 0; i < this.children.length; i++) {
+                        this.children[i].update();
+                        } 
+                }
+                constructor(default_tex="") {
+                    let x = this;
+                    this.tex=default_tex;
+                    this.srepr=""
+                    this.symbols_tex = [];
+                    this.symbols_srepr = [];
+                    this.symbol_cells = [];
+                    this.endpoints = [];
+                    this.children = []; 
+    
+                    this.container = document.createElement("span");
+                    this.container.classList.add("draggableNode");
+                    whiteboard.appendChild(this.container);
+                    this.mathFieldSpan = document.createElement("span");
+                    this.container.appendChild(this.mathFieldSpan);
+                    this.symbolAnchorContainerTable = document.createElement("table");
+                    this.symbolAnchorContainerTable.classList.add("symbolAnchorContainerTable")
+                    this.container.appendChild(this.symbolAnchorContainerTable);
+                    this.symbolAnchorContainer = document.createElement("tr");
+                    this.symbolAnchorContainerTable.appendChild(this.symbolAnchorContainer);
+                    
+
+                    this.mathFieldSpan.innerHTML=default_tex;
+    
+                    this.mathField = MQ.MathField(this.mathFieldSpan, {
+                        spaceBehavesLikeTab: true, // configurable
+                        handlers: {
+                            edit: function() { 
+                                autoCommands: 'pi sqrt',
+                                x.update();
+                            }
+                        }
+                    });
+                    instance.manage(this.container);
+                    this.update();
+                }
+            }
+
+            eqNode1 = new input_eq_node("x^2+2\\sqrt{m}=0")
+
+            instance.addEndpoint(element1, {
+                source:true,
+                endpoint:"Rectangle",
+                anchor:[ 0, 1, 0, 1,  document.getElementById("zeta").getBoundingClientRect().width/2+document.getElementById("zeta").offsetLeft+document.getElementById("table").offsetLeft+document.getElementById("row").offsetLeft, 0]
+            })
+
+            var targetEndpoint = instance.addEndpoint(element2, {
+                target:true,
+                endpoint:"Rectangle"  ,  
+                anchor:"Top"
             });
             katex.render("c = \\pm\\sqrt{a^2 + b^2}", element2, {
                 throwOnError: false
             });
-            var MQ = MathQuill.getInterface(2); // for backcompat
-            var mathField = MQ.MathField(element3, {
-                spaceBehavesLikeTab: true, // configurable
-                handlers: {
-                    edit: function() { // useful event handlers
-                    }
-                }
-            });
+            
         });
     </script>
 </body>
