@@ -57,6 +57,14 @@
       
         class std_eq_node {
           update() {
+            let x = this
+            x.endpoints.push(
+                        instance.addEndpoint(x.container, {
+                          target: true,
+                          endpoint: 'Rectangle',
+                          anchor: 'Top'
+                        })
+                      )
             //code that goes in all nodes to allow recursive updating of everything downstream
             for (let i = 0; i < this.children.length; i++) {
               this.children[i].update()
@@ -87,7 +95,6 @@
             katex.render(x.tex, x.mathFieldSpan, {
               throwOnError: false
             });
-        
             x.update();
           }
         }
@@ -206,6 +213,7 @@
           inputEqNodes.push(new input_eq_node())
         }
         stdEqNode = new std_eq_node(parent = null,srepr="Equality(Symbol('v'), Pow(Mul(Symbol('mu'), Add(Mul(Integer(2), Pow(Symbol('r'), Integer(-1))), Mul(Integer(-1), Pow(Symbol('a'), Integer(-1))))), Rational(1, 2)))",tex="v = \\sqrt{\\mu \\left(\\frac{2}{r} - \\frac{1}{a}\\right)}")
+        createInputEq();
       })
     </script>
   </body>
