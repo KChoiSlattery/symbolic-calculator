@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template
 import sympy as sp
-import numpy as np
+# import numpy as np
 import simplejson as json
 import latex2sympy2
 

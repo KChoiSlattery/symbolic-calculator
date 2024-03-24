@@ -1,35 +1,50 @@
-.whiteboard {
-  
-    display: flex;
-    flex-flow: column;
-    background-color: rgb(236, 236, 225);
-    position:relative;
-    display: block;
-  }
-
 .draggableNode {
-  position:absolute;
-  padding-top: 15px;
-  padding-right: 15px;
-  padding-bottom: 0px;
-  padding-left: 15px;
-  background-color: rgb(255, 255, 255);
-  text-align: center;
-  border: 1px solid black;
-  display: block
+    position:absolute;
+    padding-top: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    background-color: rgb(255, 255, 255);
+    text-align: center;
+    border: 2px solid black;
+    display: flex;
+    font-size: 24px;
+    cursor: move
 }
 
-.symbolLabel {
-  padding-top: 2px;
-  padding-right: 2px;
-  padding-bottom: 2px;
-  padding-left: 2px;
-  border: 1px solid black;
-  display: inline
+.mainRow {
+    display: flex;
+    flex-direction: row;
 }
 
-.symbolAnchorContainerTable {
-  margin-left: auto;
-  margin-right: auto;
-  padding-bottom: 0px;
+.outputRow {
+    display: flex;
+    flex-direction: row;
+}
+
+.equals {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.inputMath {
+    background-color: rgba(250, 250, 250);
+    border: 1px solid rgb(204, 204, 204)
+}
+
+.anchor {
+    border: 2px solid black;
+    width: 35px;
+}
+
+.inAnchor {
+    height: 14px;
+}
+
+.outAnchor {
+    height: 28px;
+}
+
+.phantom {
+    background-color: rgba(255, 255, 255, 0)
 }

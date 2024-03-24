@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <link rel="stylesheet" href="{{ url_for('static', filename = 'css/styles.css') }}" type="text/css" />
-    <link rel="stylesheet" href="{{ url_for('static', filename = 'css/whiteboard-style.css') }}" type="text/css" />
 
-    <!-- MathQuill, used for entering math equations -->
-    <link rel="stylesheet" href="{{ url_for('static', filename = 'mathquill-0.10.1/mathquill.css') }}" />
+<head>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/whiteboard-style.css')}}" type="text/css">
+
+    <!-- MathQuill, used for entering math expressions -->
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'mathquill-0.10.1/mathquill-basic.css') }}" />
     <script src="{{ url_for('static', filename = 'jquery/jquery-3.7.0.js') }}"></script>
     <script src="{{ url_for('static', filename = 'mathquill-0.10.1/mathquill.js') }}"></script>
     <script>
@@ -19,7 +19,7 @@
     <!-- tex-math-parser, self-explanatory -->
     <script type="module" src="https://cdn.jsdelivr.net/npm/tex-math-parser@2.0.4/dist/index.js"></script>
 
-    <!-- KaTeX, used for rendering math equations -->
+    <!-- KaTeX, used for rendering math expressions -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous" />
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" integrity="sha384-cpW21h6RZv/phavutF+AuVYrr+dA8xD9zs6FwLpaCct6O9ctzYFfFr4dgmgccOTx" crossorigin="anonymous"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
@@ -36,9 +36,7 @@
     <h1>Kieran's Whiteboard</h1>
     <!-- <button onclick="createInputEq()">Create Input Equation Node</button> -->
     <div id="whiteboard" class="whiteboard">
-      <span id="element2" class="draggableNode staticMathNode"></span>
     </div>
-
     <script>
       var parser = import("https://cdn.jsdelivr.net/npm/tex-math-parser@2.0.4/dist/index.js");
       element2 = document.getElementById('element2');
@@ -47,13 +45,13 @@
         var MQ = MathQuill.getInterface(2)
       
         const instance = jsPlumb.newInstance({
-          container: document.getElementById('whiteboard'),
-          connector: {
-            type: jsPlumb.BezierConnector.type,
-            options: {
-              curviness: 25
+            container: whiteboard,
+            connector: {
+                type: jsPlumb.BezierConnector.type,
+                options: {
+                curviness: 25
+                }
             }
-          }
         })
       
         whiteboard = document.getElementById('whiteboard')
