@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+      "module": "Node16",
+      "target": "es6",
+      "sourceMap": true,
+      "outDir": "src/scripts/compiled",
+      "lib": ["ES2015", "dom" ],
+      "moduleDetection": "auto",
+      "moduleResolution": "Node16",
+      "jsx": "react"
+    },
+  }

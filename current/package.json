@@ -1,0 +1,51 @@
+{
+  "name": "whiteboard",
+  "source": "src/templates/whiteboard.html",
+  "version": "0.1.0",
+  "description": "",
+  "scripts": {
+    "start": "npx parcel",
+    "build": "npx parcel build",
+    "app": "flask run"
+  },
+  "targets": {
+    "default": {
+      "distDir": "dist"
+    }
+  },
+  "parcel-namer-custom": {
+    ".js$": "/static/[type]/[name].[type]",
+    ".ts$": "/static/[type]/[name].[type]",
+    ".css$": "/static/[type]/[name].[type]",
+    ".scss$": "/static/[type]/[name].[type]",
+    ".html$": "/templates/[name].[type]",
+    "$": "/static/[type]/[name].[type]"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KChoiSlattery/symbolic-calculator.git"
+  },
+  "author": "Kieran Choi-Slattery",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KChoiSlattery/symbolic-calculator/issues"
+  },
+  "homepage": "https://github.com/KChoiSlattery/symbolic-calculator#readme",
+  "dependencies": {
+    "@jsplumb/browser-ui": "^6.2.10",
+    "@types/react": "^18.2.70",
+    "@types/react-dom": "^18.2.22",
+    "jquery": "^3.7.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.12.0",
+    "@types/node": "^20.11.30",
+    "parcel": "^2.12.0",
+    "parcel-namer-custom": "^0.2.0",
+    "parcel-namer-hashless": "^1.0.6",
+    "parcel-namer-simple": "^1.0.0",
+    "process": "^0.11.10"
+  }
+}
